@@ -1,0 +1,10 @@
+id = "mcp-server-zephex"
+name = "Zephex MCP Server"
+description = "Hosted MCP developer tools — project context, code search, architecture analysis, package auditing, and more. Connect with one API key."
+version = "0.0.1"
+schema_version = 1
+authors = ["Zephex <support@zephex.dev>"]
+repository = "https://github.com/zephexMCP/mcp-server-zephex"
+
+[context_servers.mcp-server-zephex]
+name = "Zephex MCP Server"

@@ -1,0 +1,4 @@
+{
+  /// Your Zephex API key. Get one from https://zephex.dev/dashboard
+  "zephex_api_key": "YOUR_ZEPHEX_API_KEY"
+}
