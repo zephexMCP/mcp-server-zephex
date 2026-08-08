@@ -1,9 +1,27 @@
-To use Zephex with Zed:
+To use **Zephex** in Zed:
 
-1. Sign up at [zephex.dev](https://zephex.dev) (free tier available — 300 requests/month)
-2. Open your [dashboard](https://zephex.dev/dashboard) and click **Create API Key**
-3. Copy the key (it starts with `mcp_`)
-4. Replace `YOUR_ZEPHEX_API_KEY` in your Zed `settings.json` with the key you just copied
-5. Restart Zed (or run `zed: reload context servers` from the command palette)
+1. Create an account at [zephex.dev](https://zephex.dev) (free tier available).
+2. Open [API keys](https://zephex.dev/dashboard/api-keys) and create a key.
+3. Install this extension: command palette → `zed: extensions` → search **Zephex** → Install.
+4. In Zed settings JSON, set:
 
-The extension will automatically install the `zephex` npm package on first launch via Zed's managed Node runtime — no separate install step required.
+```json
+{
+  "context_servers": {
+    "mcp-server-zephex": {
+      "settings": {
+        "zephex_api_key": "YOUR_KEY_FROM_DASHBOARD"
+      }
+    }
+  }
+}
+```
+
+5. Run `zed: reload context servers`. Open the Agent Panel — ten hosted tools should be available.
+
+The extension installs the official `zephex` npm package via Zed’s managed Node runtime (stdio MCP). Tool calls go to `https://zephex.dev/mcp` with your key.
+
+Optional terminal CLI (same account):  
+`curl -fsSL https://zephex.dev/cli/install.sh | bash` then `cd your-project && zephex login`.
+
+Docs: https://zephex.dev/docs

@@ -1,41 +1,55 @@
-# Zephex MCP Server — Zed Extension
+# Zephex — hosted MCP (Zed extension)
 
-[![Zed Extension](https://img.shields.io/badge/Zed-Extension-blueviolet?logo=zed)](https://zed.dev/extensions)
-[![npm](https://img.shields.io/npm/v/zephex.svg?label=zephex)](https://www.npmjs.com/package/zephex)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Website](https://img.shields.io/badge/Website-zephex.dev-111111?style=flat-square)](https://zephex.dev)
+[![MCP](https://img.shields.io/badge/MCP-zephex.dev%2Fmcp-00c853?style=flat-square)](https://zephex.dev/mcp)
+[![npm](https://img.shields.io/npm/v/zephex.svg?label=npm%20zephex&style=flat-square)](https://www.npmjs.com/package/zephex)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
-One-click access to **[Zephex](https://zephex.dev)** — a hosted MCP server with 10 developer tools — directly inside Zed's Agent Panel. No local server to run, no Docker, no port management. Just an API key.
+**Zephex** is a **hosted MCP server** for AI coding agents: one HTTPS endpoint, one API key, ten tools that read *your* repository instead of guessing from training data.
 
-## What you get
+This repository is the **Zed** extension that connects Zed’s Agent Panel to that hosted server.  
+Product home: **[zephex.dev](https://zephex.dev)** · Endpoint: **`https://zephex.dev/mcp`**
 
-- **Project intelligence** — AST-aware code reading, BM25-ranked search, full architecture diagrams
-- **Package safety** — live npm / PyPI / Cargo / Maven / NuGet CVE checks and deep migration guidance
-- **Security audits** — TLS, CSP, cookies, redirects on any URL with copy-paste fix snippets
-- **Persistent reasoning** — long-running thinking sessions with drift detection and cross-session memory
-- **Curated knowledge base** — answers across databases, security, frontend, backend, auth, mobile
+---
 
-Files stay on your machine. Only tool calls go out to `https://zephex.dev/mcp`.
+## What Zephex is
 
-## Setup
+| Piece | Role |
+|-------|------|
+| **Hosted MCP** | Tools over HTTPS at `https://zephex.dev/mcp` |
+| **This extension** | One-click wiring inside **Zed** (stdio via the `zephex` npm package + your API key) |
+| **Terminal CLI** | Same tools in a real shell (`zephex` / install script) — optional |
 
-### 1. Get an API key
+Agents call tools on demand (project context, search, read, architecture, tests, packages, URL audit, memory, reasoning, playbooks). Local file access stays with the client process; tool requests go to the hosted API with your key.
 
-Sign up at **[zephex.dev](https://zephex.dev)** (free tier: 300 requests / month). Open the [dashboard](https://zephex.dev/dashboard) and copy your key — it starts with `mcp_`.
+Not a local Docker stack you have to babysit. Not a second “mystery” server URL — use **`https://zephex.dev/mcp`**.
 
-### 2. Install this extension
+---
 
-In Zed: `cmd-shift-p` → `zed: extensions` → search **Zephex** → **Install**.
+## Quick start in Zed
 
-### 3. Add your key to `settings.json`
+### 1. API key
 
-`cmd-,` (Zed settings) then click the `{}` icon to edit JSON. Paste:
+1. Sign up at [zephex.dev](https://zephex.dev)  
+2. Create a key at [zephex.dev/dashboard/api-keys](https://zephex.dev/dashboard/api-keys)  
+3. Keys look like `mcp_…` (formats evolve — copy from the dashboard)
+
+Free tier available. Current limits and paid plans: always check the [dashboard](https://zephex.dev/dashboard) / pricing on the site.
+
+### 2. Install the extension
+
+In Zed: command palette → **`zed: extensions`** → search **Zephex** → **Install**.
+
+### 3. Settings
+
+Open settings JSON (`cmd-,` / `ctrl-,`, then `{}`) and set:
 
 ```json
 {
   "context_servers": {
     "mcp-server-zephex": {
       "settings": {
-        "zephex_api_key": "mcp_your_key_here"
+        "zephex_api_key": "YOUR_KEY_FROM_DASHBOARD"
       }
     }
   }
@@ -44,64 +58,151 @@ In Zed: `cmd-shift-p` → `zed: extensions` → search **Zephex** → **Install*
 
 ### 4. Reload
 
-`cmd-shift-p` → `zed: reload context servers`. Open the Agent Panel — Zephex's 10 tools are now available.
+Command palette → **`zed: reload context servers`**.  
+Open the Agent Panel — the ten Zephex tools should appear.
 
-## Tools
+---
+
+## The 10 tools (current product)
+
+These are the **only** tool names. Older docs sometimes listed removed names — ignore those.
 
 | Tool | What it does |
-|---|---|
-| `get_project_context` | Detects framework, package manager, build/test/dev/lint commands, env vars, deps, monorepo layout, entry points |
-| `read_code` | AST-extracted symbol or full-file reading with token budgets, outline mode, and pagination |
-| `find_code` | BM25-ranked search with AST-aware enclosing-block context, multi-query fan-out, exhaustive mode |
-| `explain_architecture` | End-to-end architecture analysis with Mermaid diagrams (sequence, service, C4) and health scoring |
-| `scope_task` | Plain-English task → minimal focus file set with risk assessment and reusable utilities |
-| `thinking` | Persistent reasoning sessions with drift detection, revision tracking, branching hypotheses |
-| `audit_headers` | HTTP / TLS / cookie / redirect security audit with fix snippets for Nginx, Caddy, Vercel, Cloudflare, etc. |
-| `check_package` | Live npm / PyPI / Cargo / Maven / NuGet / Pub / Hex / CocoaPods / SPM version + supply-chain signals |
-| `audit_package` | Deep package intelligence — breaking changes, CVEs, real migration steps and code diff examples |
-| `Zephex_dev_info` | Expert knowledge base across 6 domains: databases, security, frontend, backend, auth, mobile |
+|------|----------------|
+| **`get_project_context`** | Framework, scripts, auth, env, monorepo topics — start here on a new repo |
+| **`find_code`** | Ranked search (snippet / symbol / concept / everywhere) |
+| **`read_code`** | AST symbol, file batch, outline, local call-graph modes |
+| **`explain_architecture`** | How modules wire; deep mode for richer flows |
+| **`check_package`** | Registry safety, CVEs, upgrades (multiple ecosystems; use tasks) |
+| **`check_test`** | Test Pulse — run suite, failures, fix prompt, missing tests |
+| **`audit_headers`** | Live HTTPS security grade for a URL **you** provide |
+| **`project_memory`** | remember / recall facts across sessions |
+| **`keep_thinking`** | Structured multi-step reasoning + loop detection |
+| **`Zephex_dev_info`** | Expert playbooks (generic patterns — not private repo code) |
 
-## Pricing
+**Sensible call order**
 
-| Tier | Requests / month | Price |
-|---|---|---|
-| Free | 300 | $0 |
-| Pro | 3,000 | $7 / mo |
-| Max | 10,000 | $19 / mo |
+```text
+get_project_context → find_code → read_code → [edit] → check_test
+         ↘ explain_architecture when the change spans modules
+```
 
-[Manage your plan](https://zephex.dev/dashboard).
+**Removed / do not use:** `scope_task`, `inspect_url`, `audit_package`, bare `thinking`  
+(Package upgrades → `check_package` with the upgrade/security task. Stuck debug → `keep_thinking`.)
 
-## How it works
+Agent routing skill (any skill-aware agent setup):
 
-This extension is a thin Rust → WebAssembly shim that:
+```bash
+npx skills add zephexMCP/agent-skills --skill zephex
+```
 
-1. Reads `zephex_api_key` from your Zed settings
-2. Uses Zed's bundled Node.js runtime to install the [`zephex` npm package](https://www.npmjs.com/package/zephex) (the actual MCP stdio server)
-3. Spawns the server with your API key injected as `ZEPHEX_API_KEY`
+---
 
-The MCP server handles JSON-RPC, keeps file reads local, and proxies tool calls to `https://zephex.dev/mcp`. No long-lived process, no port allocation, no admin permissions.
+## MCP (hosted) in one glance
+
+| | |
+|--|--|
+| Endpoint | `https://zephex.dev/mcp` |
+| Auth | Bearer API key from the dashboard |
+| Project input | Local path (via client), public `github:owner/repo`, or `inline_files` |
+| Docs | [zephex.dev/docs](https://zephex.dev/docs) |
+
+Generic HTTP shape (for clients that take a URL + header — not required for this Zed extension):
+
+```json
+{
+  "url": "https://zephex.dev/mcp",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY"
+  }
+}
+```
+
+This extension instead spawns the official **`zephex`** npm package over stdio with `ZEPHEX_API_KEY` set (Zed-managed Node).
+
+---
+
+## Optional: terminal CLI (same account)
+
+Same key and tools, different surface — human text, project cwd, `deep --json` for agents.
+
+```bash
+# Mac / Linux
+curl -fsSL https://zephex.dev/cli/install.sh | bash
+
+# Windows PowerShell
+irm https://zephex.dev/install.ps1 | iex
+
+cd /path/to/your-project
+zephex login
+zephex overview
+zephex deep --json
+zephex find "auth"
+zephex test
+```
+
+| CLI (examples) | Maps toward |
+|----------------|-------------|
+| `overview` / `deep` | Project orientation (`get_project_context` + more) |
+| `find` / `read` | `find_code` / `read_code` |
+| `architecture` | `explain_architecture` |
+| `safe` / `check-package` | `check_package` |
+| `test` / `check test …` | `check_test` |
+| `check url …` | `audit_headers` |
+
+Full command map: [github.com/zephexMCP/zephex-cli](https://github.com/zephexMCP/zephex-cli) · [docs/cli-commands](https://zephex.dev/docs/cli-commands)
+
+Browser Mode 2 (no local install): [dashboard/terminal](https://zephex.dev/dashboard/terminal) · [zephex-web-terminal](https://github.com/zephexMCP/zephex-web-terminal)
+
+---
+
+## How this extension works
+
+Thin Rust / Wasm extension for Zed that:
+
+1. Reads `zephex_api_key` from Zed settings  
+2. Uses Zed’s bundled Node runtime to ensure the [`zephex`](https://www.npmjs.com/package/zephex) package is available  
+3. Starts the MCP **stdio** server with your key as `ZEPHEX_API_KEY`  
+4. Tool calls are authenticated against the hosted API  
+
+No separate Docker container. No manual port. No system-wide Node required for the extension path.
+
+---
 
 ## Compatibility
 
-- Zed 0.190+ (extension API 0.7.0)
-- macOS, Linux, Windows
-- Bundled Node.js runtime — no system Node required
+- **Zed** 0.190+ (extension API as declared in `extension.toml`)  
+- macOS, Linux, Windows  
+- Zed-bundled Node for the MCP process  
+
+---
 
 ## Troubleshooting
 
-**`Missing zephex_api_key`** — your `settings.json` is missing the key or has it under the wrong path. Confirm the structure: `context_servers > mcp-server-zephex > settings > zephex_api_key`. Run `zed: reload context servers` after edits.
+| Symptom | What to check |
+|---------|----------------|
+| Missing API key | `context_servers → mcp-server-zephex → settings → zephex_api_key` then reload context servers |
+| `401` / unauthorized | New key from [dashboard](https://zephex.dev/dashboard/api-keys) |
+| Tools missing | Reload context servers; reinstall extension if Node cache is stale |
+| Logs | Command palette → `zed: open log` — search `zephex` |
 
-**Tool call returns `401 Unauthorized`** — API key is invalid or expired. Get a fresh one at [zephex.dev/dashboard](https://zephex.dev/dashboard).
+---
 
-**Extension fails to start** — open `cmd-shift-p` → `zed: open log` and search for `zephex` or `extension`. The most common cause is a stale Node install in Zed's cache; reinstalling the extension fixes it.
+## Related public pages
 
-## Links
+| | |
+|--|--|
+| Product / docs | [zephex.dev](https://zephex.dev) · [docs](https://zephex.dev/docs) |
+| MCP product overview | [zephexMCP/zephex-MCPs](https://github.com/zephexMCP/zephex-MCPs) |
+| Terminal CLI | [zephexMCP/zephex-cli](https://github.com/zephexMCP/zephex-cli) |
+| Web terminal | [zephexMCP/zephex-web-terminal](https://github.com/zephexMCP/zephex-web-terminal) |
+| Agent skill | [zephexMCP/agent-skills](https://github.com/zephexMCP/agent-skills) |
+| npm | [zephex](https://www.npmjs.com/package/zephex) |
+| Issues | [this repo’s issues](https://github.com/zephexMCP/mcp-server-zephex/issues) |
 
-- [Documentation](https://zephex.dev/docs)
-- [Dashboard](https://zephex.dev/dashboard)
-- [npm package — zephex](https://www.npmjs.com/package/zephex)
-- [Report an issue](https://github.com/zephexMCP/mcp-server-zephex/issues)
+---
 
 ## License
 
-[MIT](LICENSE) © Zephex
+[MIT](LICENSE) for this extension repository.  
+The hosted Zephex service is a commercial product; see [zephex.dev](https://zephex.dev) for terms and privacy.
